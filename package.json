@@ -1,0 +1,288 @@
+{
+  "name": "douyin-chat",
+  "displayName": "抖音私信 (Douyin Chat)",
+  "description": "在 VSCode 侧边栏使用抖音网页版私信：手机竖屏、类似微信的会话列表/聊天两级界面，多账号切换，新消息通知，支持中文输入法、粘贴图片、发送文件、浅色背景。",
+  "version": "0.5.1",
+  "publisher": "local",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "douyin",
+    "抖音",
+    "chat",
+    "私信"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "scripts": {
+    "package": "node scripts/build-vsix.js"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "douyinChat.open",
+        "title": "打开抖音私信（侧边栏）",
+        "category": "抖音私信",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "douyinChat.toggle",
+        "title": "显示/隐藏抖音私信",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.reload",
+        "title": "刷新页面",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.restart",
+        "title": "重启浏览器",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.toggleTheme",
+        "title": "切换浅色背景",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.logout",
+        "title": "退出当前账号（清除登录数据）",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.showLog",
+        "title": "查看日志",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.back",
+        "title": "返回会话列表",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.diagnose",
+        "title": "诊断手机布局",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.switchAccount",
+        "title": "切换账号",
+        "category": "抖音私信",
+        "icon": "$(account)"
+      },
+      {
+        "command": "douyinChat.addAccount",
+        "title": "添加账号",
+        "category": "抖音私信"
+      },
+      {
+        "command": "douyinChat.renameAccount",
+        "title": "重命名当前账号",
+        "category": "抖音私信"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "douyinChat.toggle",
+        "key": "ctrl+alt+d",
+        "mac": "ctrl+alt+d"
+      }
+    ],
+    "configuration": {
+      "title": "抖音私信",
+      "properties": {
+        "douyinChat.browserPath": {
+          "type": "string",
+          "default": "",
+          "description": "Chrome / Edge 可执行文件路径。留空则自动查找。"
+        },
+        "douyinChat.browserMode": {
+          "type": "string",
+          "enum": [
+            "headless",
+            "offscreen",
+            "visible"
+          ],
+          "enumDescriptions": [
+            "无头模式（默认，不显示任何浏览器窗口）",
+            "有界面但把窗口移到屏幕外（无头模式被风控拦截时使用）",
+            "显示真实浏览器窗口（调试或扫码登录有问题时使用）"
+          ],
+          "default": "headless",
+          "description": "后台浏览器的运行方式，修改后需重启浏览器。"
+        },
+        "douyinChat.startUrl": {
+          "type": "string",
+          "default": "https://www.douyin.com/chat",
+          "description": "启动时打开的页面。"
+        },
+        "douyinChat.mobileLayout": {
+          "type": "boolean",
+          "default": true,
+          "description": "手机竖屏布局：先显示会话列表，点进会话后只显示聊天窗口，左上角「‹」或 Esc 返回（类似微信）。"
+        },
+        "douyinChat.phoneWidth": {
+          "type": "number",
+          "default": 400,
+          "minimum": 320,
+          "maximum": 700,
+          "description": "手机布局的最大宽度（像素）。侧边栏更宽时内容居中，更窄时跟随侧边栏宽度。"
+        },
+        "douyinChat.mobile.listSelector": {
+          "type": "string",
+          "default": "",
+          "description": "（可选）会话列表栏的 CSS 选择器。自动识别失败时填写。"
+        },
+        "douyinChat.mobile.chatSelector": {
+          "type": "string",
+          "default": "",
+          "description": "（可选）聊天栏的 CSS 选择器。自动识别失败时填写。"
+        },
+        "douyinChat.lightTheme": {
+          "type": "boolean",
+          "default": true,
+          "description": "把页面深色背景替换为浅色。"
+        },
+        "douyinChat.backgroundColor": {
+          "type": "string",
+          "default": "rgb(230, 231, 237)",
+          "description": "浅色模式下的背景色。"
+        },
+        "douyinChat.textColor": {
+          "type": "string",
+          "default": "rgb(30, 30, 30)",
+          "description": "浅色模式下替换浅色文字所用的颜色。"
+        },
+        "douyinChat.fontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "页面字体（CSS font-family），例如 \"Microsoft YaHei\", sans-serif。留空则使用抖音默认字体。也可在顶栏「Aa」中选择。"
+        },
+        "douyinChat.fontSize": {
+          "type": "number",
+          "default": 100,
+          "minimum": 80,
+          "maximum": 160,
+          "description": "文字大小比例（%），只缩放文字不缩放图标。也可在顶栏「Aa」中调节。"
+        },
+        "douyinChat.darkThreshold": {
+          "type": "number",
+          "default": 90,
+          "minimum": 10,
+          "maximum": 200,
+          "description": "背景亮度低于该值（0-255）视为深色并替换。有深灰块没被替换就调大，误替换就调小。"
+        },
+        "douyinChat.imageFormat": {
+          "type": "string",
+          "enum": [
+            "jpeg",
+            "png"
+          ],
+          "default": "jpeg",
+          "description": "投屏画面格式：jpeg 更流畅，png 文字更清晰但更耗资源。"
+        },
+        "douyinChat.imageQuality": {
+          "type": "number",
+          "default": 85,
+          "minimum": 30,
+          "maximum": 100,
+          "description": "JPEG 画质（30-100）。"
+        },
+        "douyinChat.closeBrowserOnPanelClose": {
+          "type": "boolean",
+          "default": false,
+          "description": "侧边栏视图被关闭（移除）时同时关闭后台浏览器。关闭此项则浏览器保持运行，可继续接收未读提醒。"
+        },
+        "douyinChat.openLinksExternally": {
+          "type": "boolean",
+          "default": true,
+          "description": "页面弹出的新窗口（如视频链接）用系统浏览器打开；关闭则在面板内打开。"
+        },
+        "douyinChat.unreadNotification": {
+          "type": "boolean",
+          "default": true,
+          "description": "有新的未读消息时在右下角弹出通知（侧边栏可见且 VSCode 处于前台时不弹出）。"
+        },
+        "douyinChat.unreadSelector": {
+          "type": "string",
+          "default": "",
+          "description": "未读数角标的 CSS 选择器（可选）。留空则从页面标题中解析未读数。"
+        },
+        "douyinChat.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "在状态栏显示抖音入口和未读数。"
+        },
+        "douyinChat.autoStart": {
+          "type": "boolean",
+          "default": false,
+          "description": "VSCode 启动时自动在后台启动浏览器（用于接收未读提醒）。"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "douyinChat",
+          "title": "抖音私信",
+          "icon": "media/activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "douyinChat": [
+        {
+          "type": "webview",
+          "id": "douyinChat.view",
+          "name": "抖音私信"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "douyinChat.switchAccount",
+          "when": "view == douyinChat.view",
+          "group": "navigation@1"
+        },
+        {
+          "command": "douyinChat.reload",
+          "when": "view == douyinChat.view",
+          "group": "more@1"
+        },
+        {
+          "command": "douyinChat.renameAccount",
+          "when": "view == douyinChat.view",
+          "group": "more@2"
+        },
+        {
+          "command": "douyinChat.logout",
+          "when": "view == douyinChat.view",
+          "group": "more@3"
+        },
+        {
+          "command": "douyinChat.restart",
+          "when": "view == douyinChat.view",
+          "group": "more@4"
+        },
+        {
+          "command": "douyinChat.diagnose",
+          "when": "view == douyinChat.view",
+          "group": "more@5"
+        }
+      ]
+    }
+  }
+}
